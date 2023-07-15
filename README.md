@@ -1,4 +1,4 @@
-#Blog App Redux Essentials
+# Blog App Redux Essentials
 This is blog app that created by following redux essentials tutorial in their docs. It's contains every tutorial and I committed everytime I finished each tutorial. The first time I commited, the tutorial already in part 4: Using Redux Data. So it's more like my learning tracker when I'm learning redux.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
