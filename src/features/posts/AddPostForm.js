@@ -2,29 +2,48 @@ import { useState } from 'react'
 
 
 
-import { postAdded } from './postSlice'
+import { addNewPost } from './postSlice'
 import { useDispatch, useSelector } from 'react-redux'
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const dispatch = useDispatch()
-
-  const users = useSelector(state => state.users);
+  const [userId, setUserId] = useState('')
+  
   const onTitleChange = (e) => setTitle(e.target.value)
-  const onContentChange = (e) => setContent(e.target.value)
-  const onAuthorChanged = (e) => setAuthor(e.target.value);
+  const onContentChange = (e) => setContent(e.target.value);
+  const onUserIdChanged = (e) => setUserId(e.target.value);
+  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  
+  const dispatch = useDispatch()
+  const users = useSelector(state => state.users);
+  
+  //before using thunk
+  // function onClickSave() {
+  //   if(title && content){
+  //       // dispatch(postAdded({ id: nanoid(), title: title, content: content }))
+  //        dispatch(addNewPost({title, content, user: userId}));
+  //       console.log('asdsad')
+  //   }
 
-  function onClickSave() {
-    if(title && content){
-        // dispatch(postAdded({ id: nanoid(), title: title, content: content }))
-
-         dispatch(postAdded(title, content, author));
-        console.log('asdsad')
+  //   setTitle('');
+  //   setContent('');
+  // }
+  
+  async function onSavePostClicked(){
+    const canSave = [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+    if(canSave){
+      try {
+        setAddRequestStatus('pending');
+        await dispatch(addNewPost({title, content, user:userId})).unwrap()
+        setTitle('');
+        setContent('');
+        setUserId('');
+      } catch (err) {
+        console.error('Failed to save the post: ', err);
+      }finally{
+        setAddRequestStatus('idle');
+      }
     }
-
-    setTitle('');
-    setContent('');
   }
 
   const usersOptions = users.map(user =>(
@@ -42,8 +61,9 @@ export const AddPostForm = () => {
           value={title}
           onChange={onTitleChange}
         />
-         <label htmlFor="postAuthor">Author:</label>
-        <select id="postAuthor" value={author} onChange={onAuthorChanged}>
+         <label htmlFor="postuserId">Author:</label>
+        <select id="postuserId" value={userId} onChange={onUserIdChanged}>
+          <option value=""></option>
           {usersOptions}
         </select>
         <label htmlFor="postContent">Content : </label>
@@ -54,7 +74,7 @@ export const AddPostForm = () => {
           value={content}
           onChange={onContentChange}
         />
-        <button type="button" onClick={onClickSave}>
+        <button type="button" onClick={onSavePostClicked}>
           Save Post
         </button>
       </form>

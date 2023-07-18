@@ -2,28 +2,28 @@ import React from 'react'
 import { useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { postUpdated } from './postSlice'
+import { postUpdated, selectPostById } from './postSlice'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 function EditPostForm( {match}) {
   const postId = match.params.postId;
   const post = useSelector((state) =>
-    state.posts.find((post) => post.id === postId)
-  )
+  selectPostById(state, postId)    )
 
   const dispatch = useDispatch()
     const history = useHistory();
-//   if (!post) {
-//     return (
-//       <section>
-//         <h2>Post Not Found!</h2>
-//       </section>
-//     )
-//   }
-  const [title, setTitle] = useState(post.title)
-  const [content, setContent] = useState(post.content)
-  const onTitleChange = (e) => setTitle(e.target.value)
-  const onContentChange = (e) => setContent(e.target.value)
+    const [title, setTitle] = useState(post.title)
+    const [content, setContent] = useState(post.content)
+    const onTitleChange = (e) => setTitle(e.target.value)
+    const onContentChange = (e) => setContent(e.target.value)
+  
+  if (!post) {
+    return (
+      <section>
+        <h2>Post Not Found!</h2>
+      </section>
+    )
+  }
 
   function onClickSave() {
     if (title && content) {
